@@ -11,7 +11,7 @@ function Home() {
     setLoading(true);
     setResponse(null);
     try {
-      const res = await fetch("http://localhost:8000/claude", {
+      const res = await fetch("http://localhost:7000/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -53,23 +53,18 @@ function Home() {
         <div className="warm-response">
           {response.response ? (
             (() => {
-              let parsed = null;
+              let parsed = response.response;
               try {
-                if (typeof response.response === "string") {
-                  let cleanResponse = response.response;
-                  cleanResponse = cleanResponse.replace(/\\"/g, '"');
-                  if (
-                    cleanResponse.startsWith('"') &&
-                    cleanResponse.endsWith('"')
-                  ) {
-                    cleanResponse = cleanResponse.slice(1, -1);
+                if (typeof parsed === "string") {
+                  let clean = parsed.replace(/\\"/g, '"');
+                  if (clean.startsWith('"') && clean.endsWith('"')) {
+                    clean = clean.slice(1, -1);
                   }
                   try {
-                    parsed = JSON.parse(cleanResponse);
+                    parsed = JSON.parse(clean);
                   } catch {
-                    return <pre>{response.response}</pre>;
+                    return <pre>{parsed}</pre>;
                   }
-                  parsed = response.response;
                 }
                 if (
                   typeof parsed === "object" &&
@@ -104,12 +99,10 @@ function Home() {
                     </ul>
                   );
                 } else {
-                  return (
-                    <pre>{JSON.stringify(response.response, null, 2)}</pre>
-                  );
+                  return <pre>{JSON.stringify(parsed, null, 2)}</pre>;
                 }
               } catch {
-                return <pre>{response.response}</pre>;
+                return <pre>{JSON.stringify(parsed, null, 2)}</pre>;
               }
             })()
           ) : (
@@ -130,7 +123,7 @@ function Summary() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://localhost:8000/claude/summary", {
+      const res = await fetch("http://localhost:7000/claude/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: diary }),
