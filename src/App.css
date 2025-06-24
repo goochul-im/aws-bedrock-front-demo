@@ -1,0 +1,105 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+}
+
+@keyframes logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+.warm-container {
+  background: linear-gradient(135deg, #ffe9d2 0%, #ffd6e0 100%);
+  border-radius: 18px;
+  padding: 2.5em 2em;
+  margin: 2em auto;
+  max-width: 600px;
+  box-shadow: 0 4px 24px 0 #ffbfae44;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.warm-textarea {
+  width: 100%;
+  min-width: 320px;
+  max-width: 100%;
+  min-height: 180px;
+  font-size: 1.1rem;
+  padding: 1.2em;
+  border-radius: 12px;
+  border: 1.5px solid #ffbfae;
+  background: #fff8f3;
+  resize: vertical;
+  margin-bottom: 1.2em;
+  box-shadow: 0 2px 8px 0 #ffd6e055;
+  color: #7a4c2a;
+}
+
+.warm-btn {
+  background: linear-gradient(90deg, #ffbfae 0%, #ffd6e0 100%);
+  color: #7a4c2a;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  padding: 0.8em 2.2em;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 #ffd6e055;
+  transition: background 0.2s, transform 0.2s;
+  margin-bottom: 1em;
+}
+.warm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.warm-btn:hover:not(:disabled) {
+  background: linear-gradient(90deg, #ffd6e0 0%, #ffbfae 100%);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.warm-response {
+  background: #fff8f3;
+  border-radius: 10px;
+  padding: 1em;
+  margin-top: 1.2em;
+  color: #7a4c2a;
+  box-shadow: 0 2px 8px 0 #ffd6e055;
+  text-align: left;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
