@@ -11,7 +11,7 @@ function Home() {
     setLoading(true);
     setResponse(null);
     try {
-      const res = await fetch("http://localhost:7000/claude", {
+      const res = await fetch("http://goochul.iptime.org:7000/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -123,7 +123,7 @@ function Summary() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://localhost:7000/claude/summary", {
+      const res = await fetch("http://goochul.iptime.org:7000/claude/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: diary }),
