@@ -11,7 +11,7 @@ function Home() {
     setLoading(true);
     setResponse(null);
     try {
-      const res = await fetch("http://goochul.iptime.org:7000/claude", {
+      const res = await fetch("http://localhost:7000/claude", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt }),
@@ -33,6 +33,13 @@ function Home() {
         style={{ marginBottom: "1.5em" }}
       >
         일기 분석하러 가기
+      </Link>
+      <Link
+        to="/detail"
+        className="warm-btn"
+        style={{ marginBottom: "1.5em" }}
+      >
+        일기 세부 분석
       </Link>
       <textarea
         className="warm-textarea"
@@ -123,7 +130,7 @@ function Summary() {
     setLoading(true);
     setResult(null);
     try {
-      const res = await fetch("http://goochul.iptime.org:7000/claude/summary", {
+      const res = await fetch("http://localhost:7000/claude/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: diary }),
@@ -181,12 +188,99 @@ function Summary() {
   );
 }
 
+function Detail() {
+  const [diary, setDiary] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState(null);
+
+  const handleDetail = async () => {
+    setLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch("http://localhost:7000/claude/detail", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt: diary }),
+      });
+      const data = await res.json();
+      setResult(data);
+    } catch {
+      setResult({ error: "요청 실패" });
+    }
+    setLoading(false);
+  };
+
+  return (
+    <div className="warm-container">
+      <h2>일기 세부 분석</h2>
+      <Link to="/" className="warm-btn" style={{ marginBottom: "1.5em" }}>
+        홈으로 돌아가기
+      </Link>
+      
+      <div style={{ position: "relative" }}>
+        <textarea
+          className="warm-textarea"
+          rows={10}
+          placeholder="세부 분석할 일기 내용을 입력하세요..."
+          value={diary}
+          onChange={(e) => setDiary(e.target.value)}
+        />
+        
+        {/* 글자 수 표시 부분 */}
+        <div
+          style={{
+            textAlign: "right",
+            fontSize: "0.9em",
+            color: "#666",
+            marginTop: "0.5em",
+            padding: "0 0.5em"
+          }}
+        >
+          {diary.length}자
+        </div>
+      </div>
+      
+      <br />
+      <button
+        className="warm-btn"
+        onClick={handleDetail}
+        disabled={loading || !diary}
+      >
+        {loading ? "분석 중..." : "분석 요청"}
+      </button>
+      
+      {result && (
+        <div className="warm-response">
+          {result.response ? (
+            <div
+              style={{
+                fontSize: "1.2em",
+                color: "#7a4c2a",
+                padding: "1em",
+                background: "#fff8f3",
+                borderRadius: "10px",
+                marginTop: "1em",
+              }}
+            >
+              {result.response}
+            </div>
+          ) : (
+            <pre>{JSON.stringify(result, null, 2)}</pre>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 function App() {
   return (
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/summary" element={<Summary />} />
+        <Route path="/detail" element={<Detail />} />
       </Routes>
     </Router>
   );
