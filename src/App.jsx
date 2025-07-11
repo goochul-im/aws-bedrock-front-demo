@@ -1,36 +1,15 @@
 import { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import "./App.css";
-import { useGibberishDetection } from "./hooks/useGibberishDetection";
 
 function Home() {
   const [prompt, setPrompt] = useState("");
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState(null);
-  const {
-    detectGibberish,
-    loading: gibberishLoading,
-    error: gibberishError,
-  } = useGibberishDetection();
 
   const handleSubmit = async () => {
     setLoading(true);
     setResponse(null);
-
-    const gibberishResult = await detectGibberish(prompt);
-    if (gibberishResult && !gibberishResult.is_clean) {
-      setResponse({
-        error: "입력된 내용이 올바르지 않습니다. 의미 있는 문장을 입력해주세요.",
-      });
-      setLoading(false);
-      return;
-    }
-    if (gibberishError) {
-      setResponse({ error: gibberishError });
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch("http://localhost:7000/claude", {
         method: "POST",
@@ -67,7 +46,7 @@ function Home() {
         className="warm-btn"
         style={{ marginBottom: "1.5em" }}
       >
-        루틴 분석
+        일기 루틴분석
       </Link>
       <textarea
         className="warm-textarea"
@@ -80,9 +59,9 @@ function Home() {
       <button
         className="warm-btn"
         onClick={handleSubmit}
-        disabled={loading || gibberishLoading || !prompt}
+        disabled={loading || !prompt}
       >
-        {loading || gibberishLoading ? "전송 중..." : "Claude에게 보내기"}
+        {loading ? "전송 중..." : "Claude에게 보내기"}
       </button>
       {response && (
         <div className="warm-response">
@@ -153,30 +132,10 @@ function Summary() {
   const [diary, setDiary] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const {
-    detectGibberish,
-    loading: gibberishLoading,
-    error: gibberishError,
-  } = useGibberishDetection();
 
   const handleSummary = async () => {
     setLoading(true);
     setResult(null);
-
-    const gibberishResult = await detectGibberish(diary);
-    if (gibberishResult && !gibberishResult.is_clean) {
-      setResult({
-        error: "입력된 내용이 올바르지 않습니다. 의미 있는 문장을 입력해주세요.",
-      });
-      setLoading(false);
-      return;
-    }
-    if (gibberishError) {
-      setResult({ error: gibberishError });
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch("http://localhost:7000/claude/summary", {
         method: "POST",
@@ -208,9 +167,9 @@ function Summary() {
       <button
         className="warm-btn"
         onClick={handleSummary}
-        disabled={loading || gibberishLoading || !diary}
+        disabled={loading || !diary}
       >
-        {loading || gibberishLoading ? "분석 중..." : "분석 요청"}
+        {loading ? "분석 중..." : "분석 요청"}
       </button>
       {result && (
         <div className="warm-response">
@@ -240,30 +199,10 @@ function Detail() {
   const [diary, setDiary] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
-  const {
-    detectGibberish,
-    loading: gibberishLoading,
-    error: gibberishError,
-  } = useGibberishDetection();
 
   const handleDetail = async () => {
     setLoading(true);
     setResult(null);
-
-    const gibberishResult = await detectGibberish(diary);
-    if (gibberishResult && !gibberishResult.is_clean) {
-      setResult({
-        error: "입력된 내용이 올바르지 않습니다. 의미 있는 문장을 입력해주세요.",
-      });
-      setLoading(false);
-      return;
-    }
-    if (gibberishError) {
-      setResult({ error: gibberishError });
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await fetch("http://localhost:7000/claude/detail", {
         method: "POST",
@@ -284,7 +223,7 @@ function Detail() {
       <Link to="/" className="warm-btn" style={{ marginBottom: "1.5em" }}>
         홈으로 돌아가기
       </Link>
-
+      
       <div style={{ position: "relative" }}>
         <textarea
           className="warm-textarea"
@@ -293,7 +232,7 @@ function Detail() {
           value={diary}
           onChange={(e) => setDiary(e.target.value)}
         />
-
+        
         {/* 글자 수 표시 부분 */}
         <div
           style={{
@@ -301,22 +240,22 @@ function Detail() {
             fontSize: "0.9em",
             color: "#666",
             marginTop: "0.5em",
-            padding: "0 0.5em",
+            padding: "0 0.5em"
           }}
         >
           {diary.length}자
         </div>
       </div>
-
+      
       <br />
       <button
         className="warm-btn"
         onClick={handleDetail}
-        disabled={loading || gibberishLoading || !diary}
+        disabled={loading || !diary}
       >
-        {loading || gibberishLoading ? "분석 중..." : "분석 요청"}
+        {loading ? "분석 중..." : "분석 요청"}
       </button>
-
+      
       {result && (
         <div className="warm-response">
           {result.response ? (
@@ -342,109 +281,92 @@ function Detail() {
 }
 
 function Routine() {
-  const [diary, setDiary] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const {
-    detectGibberish,
-    loading: gibberishLoading,
-    error: gibberishError,
-  } = useGibberishDetection();
+    const [diary, setDiary] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [result, setResult] = useState(null);
 
-  const handleRoutine = async () => {
-    setLoading(true);
-    setResult(null);
-
-    const gibberishResult = await detectGibberish(diary);
-    if (gibberishResult && !gibberishResult.is_clean) {
-      setResult({
-        error: "입력된 내용이 올바르지 않습니다. 의미 있는 문장을 입력해주세요.",
-      });
+  
+    const handleRoutine = async () => {
+      setLoading(true);
+      setResult(null);
+  
+      try {
+        const res = await fetch("http://localhost:7000/claude/routine", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ prompt: diary }),
+        });
+        const data = await res.json();
+        setResult(data);
+      } catch {
+        setResult({ error: "요청 실패" });
+      }
       setLoading(false);
-      return;
-    }
-    if (gibberishError) {
-      setResult({ error: gibberishError });
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const res = await fetch("http://localhost:7000/claude/routine", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: diary }),
-      });
-      const data = await res.json();
-      setResult(data);
-    } catch {
-      setResult({ error: "요청 실패" });
-    }
-    setLoading(false);
-  };
-
-  return (
-    <div className="warm-container">
-      <h2>루틴 분석</h2>
-      <Link to="/" className="warm-btn" style={{ marginBottom: "1.5em" }}>
-        홈으로 돌아가기
-      </Link>
-
-      <div style={{ position: "relative" }}>
-        <textarea
-          className="warm-textarea"
-          rows={10}
-          placeholder="루틴 분석"
-          value={diary}
-          onChange={(e) => setDiary(e.target.value)}
-        />
-
-        {/* 글자 수 표시 부분 */}
-        <div
-          style={{
-            textAlign: "right",
-            fontSize: "0.9em",
-            color: "#666",
-            marginTop: "0.5em",
-            padding: "0 0.5em",
-          }}
+    };
+  
+    return (
+      <div className="warm-container">
+        <h2>루틴 분석</h2>
+        <Link to="/" className="warm-btn" style={{ marginBottom: "1.5em" }}>
+          홈으로 돌아가기
+        </Link>
+  
+        <div style={{ position: "relative" }}>
+          <textarea
+            className="warm-textarea"
+            rows={10}
+            placeholder="루틴 분석"
+            value={diary}
+            onChange={(e) => setDiary(e.target.value)}
+          />
+  
+          {/* 글자 수 표시 부분 */}
+          <div
+            style={{
+              textAlign: "right",
+              fontSize: "0.9em",
+              color: "#666",
+              marginTop: "0.5em",
+              padding: "0 0.5em",
+            }}
+          >
+            {diary.length}자
+          </div>
+        </div>
+  
+        <br />
+        <button
+          className="warm-btn"
+          onClick={handleRoutine}
+          disabled={loading || !diary}
         >
-          {diary.length}자
-        </div>
+          {loading ? "분석 중..." : "분석 요청"}
+        </button>
+  
+        {result && (
+          <div className="warm-response">
+            {result.response ? (
+              <div
+                style={{
+                  fontSize: "1.2em",
+                  color: "#7a4c2a",
+                  padding: "1em",
+                  background: "#fff8f3",
+                  borderRadius: "10px",
+                  marginTop: "1em",
+                }}
+              >
+                {result.response}
+              </div>
+            ) : (
+              <pre>{JSON.stringify(result, null, 2)}</pre>
+            )}
+          </div>
+        )}
       </div>
+    );
+  }
 
-      <br />
-      <button
-        className="warm-btn"
-        onClick={handleRoutine}
-        disabled={loading || gibberishLoading || !diary}
-      >
-        {loading || gibberishLoading ? "분석 중..." : "분석 요청"}
-      </button>
-
-      {result && (
-        <div className="warm-response">
-          {result.response ? (
-            <div
-              style={{
-                fontSize: "1.2em",
-                color: "#7a4c2a",
-                padding: "1em",
-                background: "#fff8f3",
-                borderRadius: "10px",
-                marginTop: "1em",
-              }}
-            >
-              {result.response}
-            </div>
-          ) : (
-            <pre>{JSON.stringify(result, null, 2)}</pre>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
 
 function App() {
   return (
@@ -460,4 +382,3 @@ function App() {
 }
 
 export default App;
-
